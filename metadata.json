@@ -1,0 +1,5 @@
+{
+  "name": "ChefBot: Assistent de Cuina amb Gemini",
+  "description": "Un xatbot impulsat per Gemini per obtenir receptes de cuina saludables i menús equilibrats. Configura la personalitat del xef al panell d'administració.",
+  "requestFramePermissions": []
+}

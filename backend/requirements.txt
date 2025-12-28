@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+html5lib
+flask
+flask-cors
+psycopg2-binary
+python-dotenv
+psycopg2-binary
+python-dotenv
