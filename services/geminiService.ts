@@ -34,22 +34,23 @@ const getFinalSystemInstruction = (baseInstruction: string, offTopicResponse: st
 // Funció per cercar receptes al backend
 const searchBackendRecipes = async (query: string): Promise<Recipe[]> => {
     try {
-        const res = await fetch(`http://localhost:5000/api/recipes/search?q=${encodeURIComponent(query)}`);
-        if (res.ok) {
-            const data = await res.json();
-            return data.map((r: any) => ({
-                id: r.id,
-                name: r.name,
-                ingredients: Array.isArray(r.ingredients) ? r.ingredients : (JSON.parse(r.ingredients || '[]')),
-                instructions: r.instructions,
-                imageUrl: r.image_url,
-                sourceUrl: r.source_url
-            }));
+        const res = await fetch(`/api/recipes/search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) {
+            throw new Error(`Backend responded with status ${res.status}`);
         }
+        const data = await res.json();
+        return data.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            ingredients: Array.isArray(r.ingredients) ? r.ingredients : (JSON.parse(r.ingredients || '[]')),
+            instructions: r.instructions,
+            imageUrl: r.image_url,
+            sourceUrl: r.source_url
+        }));
     } catch (e) {
         console.error("Error searching backend recipes:", e);
+        throw e; // Re-throw to handle it in sendMessage
     }
-    return [];
 };
 
 export const sendMessage = async (
@@ -67,7 +68,14 @@ export const sendMessage = async (
         // 3. Si troba receptes, construeix manualment l'HTML (acordeons) sense passar per l'LLM.
         // Això garanteix 0% d'al·lucinacions i que només es mostrin dades reals.
         // ************************************************************************************************
-        const relevantRecipes = await searchBackendRecipes(message);
+        let relevantRecipes: Recipe[] = [];
+
+        try {
+            relevantRecipes = await searchBackendRecipes(message);
+        } catch (dbError) {
+            onStream("⚠️ **Error de connexió:** No he pogut connectar amb la base de dades. Si us plau, assegura't que el servidor backend (Python) està en marxa.");
+            return;
+        }
 
         if (relevantRecipes.length === 0) {
             const apology = "Ho sento, no he trobat cap recepta a la meva base de dades que coincideixi amb el que busques. Només puc oferir informació sobre les receptes que tinc guardades localment.";

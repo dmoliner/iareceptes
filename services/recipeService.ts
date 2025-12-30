@@ -3,7 +3,7 @@ import { createChatInstance } from './geminiService';
 
 export const extractRecipeFromUrl = async (url: string, config: Config): Promise<Recipe> => {
     try {
-        const response = await fetch('http://localhost:5000/api/extract', {
+        const response = await fetch('/api/extract', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export interface ScannedItem {
 }
 
 export const scanRootCategories = async (url: string = 'https://www.kilometre0.cat/'): Promise<ScannedItem[]> => {
-    const response = await fetch('http://localhost:5000/api/scan-root', {
+    const response = await fetch('/api/scan-root', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url }),
@@ -46,7 +46,7 @@ export const scanRootCategories = async (url: string = 'https://www.kilometre0.c
 };
 
 export const scanRecipesFromUrl = async (url: string): Promise<ScannedItem[]> => {
-    const response = await fetch('http://localhost:5000/api/scan', {
+    const response = await fetch('/api/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url }),
