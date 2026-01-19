@@ -7,6 +7,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 class Database:
     def __init__(self):
+        self.database_url = os.getenv("DATABASE_URL")
         self.host = os.getenv("DB_HOST", "localhost")
         self.database = os.getenv("DB_NAME", "chefbot")
         self.user = os.getenv("DB_USER", "postgres")
@@ -19,13 +20,16 @@ class Database:
 
     def connect(self):
         try:
-            self.conn = psycopg2.connect(
-                host=self.host,
-                database=self.database,
-                user=self.user,
-                password=self.password,
-                port=self.port
-            )
+            if self.database_url:
+                self.conn = psycopg2.connect(self.database_url)
+            else:
+                self.conn = psycopg2.connect(
+                    host=self.host,
+                    database=self.database,
+                    user=self.user,
+                    password=self.password,
+                    port=self.port
+                )
             print("Connected to PostgreSQL database")
         except Exception as e:
             print(f"Error connecting to database: {e}")

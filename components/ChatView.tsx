@@ -89,7 +89,8 @@ const ChatView: React.FC<ChatViewProps> = ({ config, onShowAdmin }) => {
         setMessages(prev => [...prev, { id: botMessageId, text: '', sender: 'bot', sources: [] }]);
 
         try {
-            await sendMessage(text, config, (chunk, sources) => {
+            // Pass current messages (history) + current text
+            await sendMessage(text, messages, config, (chunk, sources) => {
                 setMessages(prev => prev.map(msg =>
                     msg.id === botMessageId
                         ? { ...msg, text: msg.text + chunk, sources: sources || msg.sources }
