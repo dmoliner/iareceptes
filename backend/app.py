@@ -166,7 +166,7 @@ RULES:
     if not api_key:
          return jsonify({"text": "Error: GEMINI_API_KEY not set on server."}), 500
          
-    model = genai.GenerativeModel('gemini-2.0-flash-exp', system_instruction=system_instruction)
+    model = genai.GenerativeModel('gemini-2.0-flash', system_instruction=system_instruction)
     
     # Start chat with history
     chat_session = model.start_chat(history=gemini_history)
